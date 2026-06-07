@@ -1,6 +1,6 @@
 import Cabecalho from "./components/Cabecalho";
 import Rodape from "./components/Rodape";
-import Login from "./Pages/Login"
+import Login from "./pages/Login"
 import { Outlet } from "react-router-dom";
 
 function App(){

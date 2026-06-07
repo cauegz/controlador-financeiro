@@ -1,9 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
-import Login from './Pages/Login.jsx'
-import Home from './Pages/Home.jsx'
-import PaginaErro from './Pages/PaginaErro.jsx'
+import Login from './pages/Login.jsx'
+import Home from './pages/Home.jsx'
+import PaginaErro from './pages/PaginaErro.jsx'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 // configura o roteador
