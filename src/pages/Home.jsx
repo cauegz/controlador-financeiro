@@ -1,10 +1,14 @@
 import { useNavigate } from "react-router-dom";
 import { estaLogado } from "../utils/auth";
 import { useEffect, useState } from "react";
+import FormReceita from "../components/FormReceita.jsx";
+import FormDespesa from "../components/FormDespesa.jsx";
 
 
 // TODO:
 // 1 - adicionar <ProtectedRoute />
+// 2 - implementar a edição de transações
+// 3 - fazer css
 
 function Home(){
     const navigate = useNavigate();
@@ -42,6 +46,7 @@ function Home(){
     function salvarReceita(){
         const novaReceita = {
             tipo: "receita",
+            id: Date.now(),
             nome: nomeReceita,
             valor: Number(valorReceita),
             data: dataReceita
@@ -57,6 +62,7 @@ function Home(){
     function salvarDespesa(){
         const novaDespesa = {
             tipo: "despesa",
+            id: Date.now(),
             nome: nomeDespesa,
             valor: Number(valorDespesa),
             data: dataDespesa
@@ -69,47 +75,46 @@ function Home(){
     const saldo = transacoes.reduce((acc, atual) => {
         return atual.tipo == "receita" 
             ? acc + atual.valor 
-            : acc - atual.valor}
-        , 0);
+            : acc - atual.valor
+        }
+    , 0);
+    
+    function excluirTransacao(id){
+        const novasTransacoes = transacoes.filter(
+            transacao => transacao.id != id
+        );
+        setTransacoes(novasTransacoes);
+        salvaLocal(novasTransacoes);
+    }
+    
+    function editarTransacao(id){
+        // implementar depois
+    }
 
     return (
         <div>
             <h1>Controlador Financeiro</h1>
             <h2>Bem-vindo {usuario?.nome}</h2>
             <section>
-                <div>
-                    <h2>Adicionar receita</h2>
-                    <label htmlFor="inputNomeReceita">
-                        Nome: &nbsp;
-                        <input type="text" id="inputNomeReceita" onChange={(e) => setNomeReceita(e.target.value)}/>
-                    </label>
-                    <label htmlFor="inputValorReceita">
-                        Valor: &nbsp;
-                        <input type="number" id="inputValorReceita" onChange={(e) => setValorReceita(e.target.value)}/>
-                    </label>
-                    <label htmlFor="inputDataReceita">
-                        Data: &nbsp;
-                        <input type="date" id="inputDataReceita" onChange={(e) => setDataReceita(e.target.value)}/>
-                    </label>
-                    <button onClick={ salvarReceita }> enviar </button>
-                </div>
-                <div>
-                    <h2>Adicionar despesa</h2>
-                    <label htmlFor="inputNomeDespesa">
-                        Nome: &nbsp;
-                        <input type="text" id="inputNomeDespesa" onChange={(e) => setNomeDespesa(e.target.value)}/>
-                    </label>
-                    <label htmlFor="inputValorDespesa">
-                        Valor: &nbsp;
-                        <input type="number" id="inputValorDespesa" onChange={(e) => setValorDespesa(e.target.value)}/>
-                    </label>
-                    <label htmlFor="inputDataDespesa">
-                        Data: &nbsp;
-                        <input type="date" id="inputDataDespesa" onChange={(e) => setDataDespesa(e.target.value)}/>
-                    </label>
-                    <button onClick={ salvarDespesa }> enviar </button>
-
-                </div>
+                <FormReceita 
+                    nome={nomeReceita} 
+                    setNome={setNomeReceita} 
+                    valor={valorReceita} 
+                    setValor={setValorReceita} 
+                    data={dataReceita} 
+                    setData={setDataReceita} 
+                    salvarReceita={salvarReceita}
+                />
+                
+                <FormDespesa 
+                    nome={nomeDespesa} 
+                    setNome={setNomeDespesa} 
+                    valor={valorDespesa} 
+                    setValor={setValorDespesa} 
+                    data={dataDespesa} 
+                    setData={setDataDespesa} 
+                    salvarDespesa={salvarDespesa}
+                />
             </section>
             <section>
                 <div>
@@ -120,6 +125,7 @@ function Home(){
                                 <td>Nome</td>
                                 <td>Valor</td>
                                 <td>Data</td>
+                                <td>Ações</td>
                             </tr>
                         </thead>
                         <tbody>
@@ -128,6 +134,11 @@ function Home(){
                                     <td>{transacao.nome}</td>
                                     <td>{transacao.valor}</td>
                                     <td>{transacao.data}</td>
+                                    <td>
+                                        <a onClick={() => editarTransacao(transacao.id)}>editar</a> 
+                                        |
+                                        <a onClick={() => excluirTransacao(transacao.id)}>excluir</a>
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>
