@@ -33,7 +33,7 @@ function Login(){
         const usuario = usuarioEncontrado();
         if(usuario){
             sessionStorage.setItem("usuario", JSON.stringify(usuario))
-            navigate('/');
+            navigate('/home');
         } else {
             setErro('usuario ou senha invalidos')
         }
