@@ -13,11 +13,23 @@ function Home(){
             navigate('/login')
         }
     }, [navigate])
+
+    
+
     const usuario = JSON.parse(
         sessionStorage.getItem("usuario")
     );
 
     const [transacoes, setTransacoes] = useState([]);
+
+    useEffect(() => {
+        const dados = localStorage.getItem("transacoes_" + usuario.nome)
+        if(dados){
+            setTransacoes(JSON.parse(dados));
+        } else {
+            setTransacoes([]);
+        }
+    }, []);
 
     const [valorReceita, setValorReceita] = useState(0);
     const [dataReceita, setDataReceita] = useState('');
@@ -28,27 +40,30 @@ function Home(){
     const [nomeDespesa, setNomeDespesa] = useState('');
 
     function salvarReceita(){
-        setTransacoes([
-            ...transacoes,
-            {
-                tipo: "receita",
-                nome: nomeReceita,
-                valor: Number(valorReceita),
-                data: dataReceita
-            }
-        ])
+        const novaReceita = {
+            tipo: "receita",
+            nome: nomeReceita,
+            valor: Number(valorReceita),
+            data: dataReceita
+        }
+        setTransacoes([...transacoes, novaReceita])
+        salvaLocal([...transacoes, novaReceita]);
     }
     
+    function salvaLocal(transacoes){
+        localStorage.setItem("transacoes_" + usuario.nome, JSON.stringify(transacoes));
+    }
+
     function salvarDespesa(){
-        setTransacoes([
-            ...transacoes,
-            {
-                tipo: "despesa",
-                nome: nomeDespesa,
-                valor: Number(valorDespesa),
-                data: dataDespesa
-            }
-        ])
+        const novaDespesa = {
+            tipo: "despesa",
+            nome: nomeDespesa,
+            valor: Number(valorDespesa),
+            data: dataDespesa
+        }
+
+        setTransacoes([...transacoes, novaDespesa])
+        salvaLocal([...transacoes, novaDespesa]);
     }
 
     const saldo = transacoes.reduce((acc, atual) => {
@@ -108,8 +123,8 @@ function Home(){
                             </tr>
                         </thead>
                         <tbody>
-                            {transacoes.map((transacao) => (
-                                <tr>
+                            {transacoes.map((transacao, index) => (
+                                <tr key={index}>
                                     <td>{transacao.nome}</td>
                                     <td>{transacao.valor}</td>
                                     <td>{transacao.data}</td>
