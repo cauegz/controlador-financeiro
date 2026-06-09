@@ -3,6 +3,7 @@ import { estaLogado } from "../utils/auth";
 import { useEffect, useState } from "react";
 import FormReceita from "../components/FormReceita.jsx";
 import FormDespesa from "../components/FormDespesa.jsx";
+import PopUpEditar from "../components/PopUpEditar.jsx"
 
 
 // TODO:
@@ -42,6 +43,8 @@ function Home(){
     const [valorDespesa, setValorDespesa] = useState(0);
     const [dataDespesa, setDataDespesa] = useState('');
     const [nomeDespesa, setNomeDespesa] = useState('');
+    const [formEditar, setFormEditar] = useState(false);
+    const [transacaoEditar, setTransacaoEditar] = useState(null);
 
     function salvarReceita(){
         const novaReceita = {
@@ -86,9 +89,10 @@ function Home(){
         setTransacoes(novasTransacoes);
         salvaLocal(novasTransacoes);
     }
-    
+
     function editarTransacao(id){
-        // implementar depois
+        setTransacaoEditar(transacoes.find((transacao) => transacao.id === id))
+        setFormEditar(true);   
     }
 
     return (
@@ -148,6 +152,13 @@ function Home(){
             <section>
                 <h2>Saldo: { saldo }</h2>
             </section>
+            {formEditar && (
+                <PopUpEditar 
+                    transacao = {transacaoEditar}
+                    onClose = {() => setFormEditar(false)}
+                />
+            )
+            }
         </div>
     )
 }
